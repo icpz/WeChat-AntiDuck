@@ -69,5 +69,7 @@ sudo make APP_EXEC=obs APP_NAME=OBS.app inject
 
 + [kubo/funchook](https://github.com/kubo/funchook)
 
++ [facebook/fishhook](https://github.com/facebook/fishhook)
+
 + [Sunnyyoung/WeChatTweak-macOS](https://github.com/Sunnyyoung/WeChatTweak-macOS)
 
