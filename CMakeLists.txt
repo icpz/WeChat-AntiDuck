@@ -1,15 +1,16 @@
 cmake_minimum_required(VERSION 3.10)
 project(WeChat-AntiDuck)
 
-option(FUNCHOOK_BUILD_SHARED "" OFF)
-option(FUNCHOOK_BUILD_TESTS  "" OFF)
-add_subdirectory(funchook)
+add_library(fishhook-static STATIC fishhook/fishhook.c)
+target_include_directories(fishhook-static PUBLIC fishhook/)
 
-set(SRCS src/antiduck.c)
+set(SRCS
+    src/antiduck.c
+    )
 
 set(DEPS
-    funchook-static
     "-framework CoreAudio"
+    fishhook-static
     )
 
 file(COPY injection DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
