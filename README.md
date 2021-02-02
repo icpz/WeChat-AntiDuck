@@ -18,7 +18,7 @@ This project aims to invalid `AudioDeviceDuck` by hooking it with an empty funct
 ```bash
 # clone and change into the repo directory
 
-git clone --recurse-submodules https://github.com/icpz/WeChat-AntiDuck
+git clone --recurse-submodules https://github.com/icpz/WeChat-AntiDuck && cd WeChat-AntiDuck
 
 mkdir -p build && cd build
 
@@ -57,7 +57,7 @@ sudo make APP_EXEC=QQ inject
 ```
 
 
-If the executable of application is not match with the application name, you could invoke
+If the executable of the application does not match with the application name, you could invoke
 
 ```bash
 sudo make APP_EXEC=obs APP_NAME=OBS.app inject
