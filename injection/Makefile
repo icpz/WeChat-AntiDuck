@@ -28,6 +28,7 @@ inject::
 		cp "${APP_PATH}/${APP_EXEC}" "${APP_PATH}/${BACKUP_NAME}";\
 		cp "${LIBAD_PATH}/${LIBAD_NAME}" "${APP_PATH}";\
 		"${INSERT_DYLIB}" "@executable_path/${LIBAD_NAME}" "${APP_PATH}/${APP_EXEC}" "${APP_PATH}/${APP_EXEC}" --all-yes;\
+		codesign --force --deep --sign - "/Applications/${APP_NAME}";\
 		echo "Inject successfully!";\
 	fi
 

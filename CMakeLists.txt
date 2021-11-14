@@ -1,8 +1,23 @@
 cmake_minimum_required(VERSION 3.10)
 project(WeChat-AntiDuck)
 
-add_library(fishhook-static STATIC fishhook/fishhook.c)
-target_include_directories(fishhook-static PUBLIC fishhook/)
+add_library(fishhook-static-x64 STATIC fishhook/fishhook.c)
+target_include_directories(fishhook-static-x64 PUBLIC fishhook/)
+set_property(TARGET fishhook-static-x64 PROPERTY OSX_ARCHITECTURES x86_64)
+
+add_library(fishhook-static-arm64 STATIC fishhook/fishhook.c)
+target_include_directories(fishhook-static-arm64 PUBLIC fishhook/)
+set_property(TARGET fishhook-static-arm64 PROPERTY OSX_ARCHITECTURES arm64)
+
+add_custom_target(fishhook-static-lipo
+    COMMAND lipo -create -output libfishhook-static.a libfishhook-static-arm64.a libfishhook-static-x64.a
+    BYPRODUCTS libfishhook-static.a)
+add_dependencies(fishhook-static-lipo fishhook-static-arm64 fishhook-static-x64)
+
+add_library(fishhook-static STATIC IMPORTED)
+add_dependencies(fishhook-static fishhook-static-lipo)
+set_property(TARGET fishhook-static PROPERTY IMPORTED_LOCATION libfishhook-static.a)
+target_include_directories(fishhook-static INTERFACE fishhook/)
 
 set(SRCS
     src/antiduck.c
@@ -15,9 +30,18 @@ set(DEPS
 
 file(COPY injection DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
-add_library(antiduck SHARED ${SRCS})
-target_link_libraries(antiduck PUBLIC ${DEPS})
-set_property(TARGET antiduck PROPERTY LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/injection)
+add_library(antiduck-x64 SHARED ${SRCS})
+target_link_libraries(antiduck-x64 PUBLIC ${DEPS})
+set_property(TARGET antiduck-x64 PROPERTY OSX_ARCHITECTURES x86_64)
+
+add_library(antiduck-arm64 SHARED ${SRCS})
+target_link_libraries(antiduck-arm64 PUBLIC ${DEPS})
+set_property(TARGET antiduck-arm64 PROPERTY OSX_ARCHITECTURES arm64)
+
+add_custom_target(antiduck ALL
+    COMMAND lipo -create -output injection/libantiduck.dylib libantiduck-x64.dylib libantiduck-arm64.dylib
+    BYPRODUCTS injection/libantiduck.dylib)
+add_dependencies(antiduck antiduck-x64 antiduck-arm64)
 
 add_custom_target(inject
     COMMAND sudo make inject
